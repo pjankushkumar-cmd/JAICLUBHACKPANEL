@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>9X Godzilla 2.0 - Ultimate Smart Panel</title>
+    <title>9X Godzilla 2.0 - Strict Protection Panel</title>
     <style>
         * {
             box-sizing: border-box;
@@ -17,7 +17,7 @@
             background: #000;
         }
 
-        /* 💎 PREMIUM 85px TOP STATUS BAR */
+        /* 👑 PREMIUM 85px TOP STATUS BAR */
         .top-status-bar {
             width: 100%;
             height: 85px;
@@ -30,7 +30,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
             position: relative;
             z-index: 9999;
-            transition: all 0.4s ease;
         }
 
         .mod-title {
@@ -41,7 +40,7 @@
             text-shadow: 0 0 8px #ff0055;
         }
 
-        /* Dynamic Status Badge */
+        /* Status Badge Style */
         .status-badge {
             padding: 10px 22px;
             border-radius: 6px;
@@ -53,11 +52,8 @@
             color: #ff0055;
             background: rgba(255, 0, 85, 0.15);
             box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
-            text-align: center;
-            transition: all 0.4s ease;
         }
 
-        /* Alert Warning State (Orange/Yellow for Deposit) */
         .status-deposit-needed {
             border-color: #ffaa00 !important;
             color: #ffaa00 !important;
@@ -65,7 +61,6 @@
             box-shadow: 0 0 15px rgba(255, 170, 0, 0.5) !important;
         }
 
-        /* Fully Activated Verified State (Green) */
         .status-verified {
             border-color: #00ffcc !important;
             color: #00ffcc !important;
@@ -85,6 +80,26 @@
             height: 100%;
             border: none;
         }
+
+        /* 🛡️ INVISIBLE ANTI-LOGIN SHIELD */
+        /* Yeh layer user ko login screen par click karne se bilkul rok degi */
+        .anti-login-shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 8888;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
     </style>
 </head>
 <body>
@@ -95,6 +110,9 @@
     </div>
 
     <div class="web-container">
+        <div id="shieldLayer" class="anti-login-shield">
+            <div>⚠️ LOGIN NOT ALLOWED!<br><span style="font-size:13px; color:#aaa;">Redirecting to Registration Page...</span></div>
+        </div>
         <iframe id="siteFrame" src="https://www.jaiclub18.com/#/register?invitationCode=377572996558"></iframe>
     </div>
 
@@ -102,65 +120,75 @@
         const iframe = document.getElementById('siteFrame');
         const statusText = document.getElementById('statusText');
         const statusBar = document.getElementById('statusBar');
+        const shieldLayer = document.getElementById('shieldLayer');
 
         const REGISTER_URL = "https://www.jaiclub18.com/#/register?invitationCode=377572996558";
         
-        let initialRegistrationDone = false;
+        // Force fully reload register link strictly at startup
+        iframe.src = REGISTER_URL;
 
-        // 🔄 CONTINUOUS REAL-TIME TRACKING (0.7 Seconds Interval)
+        // 🔄 ULTRA FAST TRACKING LOOP (Every 0.3 Seconds for Instant Response)
         setInterval(() => {
             try {
                 let currentURL = iframe.contentWindow.location.href;
-                let doc = iframe.contentWindow.document;
-
-                // 🛑 1. LOGOUT OR DIRECT LOGIN INTERCEPT LOOP (Never allow user on login route)
-                if (currentURL.includes('#/login') || currentURL.endsWith('/login') || currentURL.includes('logout')) {
-                    iframe.src = REGISTER_URL; // Force back to registration
-                    initialRegistrationDone = false;
+                
+                // 🛑 1. IF USER ARRIVES ON LOGIN OR LOGOUT PAGE
+                if (currentURL.includes('/login') || currentURL.includes('#/login') || currentURL.includes('logout')) {
                     
-                    // Reset to original status
+                    // Step A: Immediately show the shield to block any touch/click inputs
+                    shieldLayer.style.display = "flex";
+                    
+                    // Step B: Reset Status Bar instantly
                     statusText.innerText = "NOT ACTIVATED";
                     statusText.className = "status-badge";
                     statusBar.style.borderBottomColor = "#ff0055";
+
+                    // Step C: Forcefully kick the user back to the register URL
+                    iframe.src = REGISTER_URL;
+                    
+                    // Step D: Hide shield after redirection is done
+                    setTimeout(() => {
+                        shieldLayer.style.display = "none";
+                    }, 1000);
+                    
                     return;
                 }
 
-                // 💸 2. LIVE DEPOSIT & BALANCE TRACKING DETECTOR
-                // Elements parsed dynamically from the dashboard elements seen in the video
-                let balanceElement = doc.querySelector('.balance, .total-balance, [class*="balance"]'); 
-                let walletAmount = 0;
-
-                if (balanceElement) {
-                    // Extract numerical values from strings like "₹0.00" or "300"
-                    walletAmount = parseFloat(balanceElement.innerText.replace(/[^0-9.]/g, '')) || 0;
-                }
-
-                // 💳 3. SYSTEM LOGIC CONTROLLER BASED ON USER REVENUE / NAVIGATION
+                // 💸 2. LIVE DEPOSIT TRACKING LOGIC (When User is Inside Home/Dashboard)
                 if (currentURL.includes('#/home') || currentURL.includes('#/main') || currentURL.includes('#/mine')) {
-                    initialRegistrationDone = true;
+                    let doc = iframe.contentWindow.document;
+                    let balanceElement = doc.querySelector('.balance, .total-balance, [class*="balance"]');
+                    let walletAmount = 0;
 
+                    if (balanceElement) {
+                        walletAmount = parseFloat(balanceElement.innerText.replace(/[^0-9.]/g, '')) || 0;
+                    }
+
+                    // Balance Condition Checks
                     if (walletAmount >= 300) {
-                        // USER VERIFIED & CONNECTED (Green State triggered)
                         statusText.innerText = "USER VERIFIED / CONNECTED";
                         statusText.className = "status-badge status-verified";
                         statusBar.style.borderBottomColor = "#00ffcc";
                     } else {
-                        // REGISTERED BUT NO DEPOSIT / LOW BALANCE (Orange State triggered)
                         statusText.innerText = "PLEASE DEPOSIT 300 RUPEES";
                         statusText.className = "status-badge status-deposit-needed";
                         statusBar.style.borderBottomColor = "#ffaa00";
                     }
-                } else if (!initialRegistrationDone) {
-                    // Default Initial State
-                    statusText.innerText = "NOT ACTIVATED";
-                    statusText.className = "status-badge";
-                    statusBar.style.borderBottomColor = "#ff0055";
                 }
 
             } catch (error) {
-                // Background execution layer protection
+                // Security policy block bypass layer
+                // Agar iframe path block ho raha hai, toh hum content check backup lagate hain
+                try {
+                    let currentPath = iframe.contentWindow.location.hash;
+                    if (currentPath.includes('login')) {
+                        shieldLayer.style.display = "flex";
+                        iframe.src = REGISTER_URL;
+                        setTimeout(() => { shieldLayer.style.display = "none"; }, 1000);
+                    }
+                } catch(e) {}
             }
-        }, 700);
+        }, 300); // 0.3 second loop taaki user ko click karne ka mauka hi na mile
     </script>
 
 </body>

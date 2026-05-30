@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Godzilla 9X Ultimate Mod Panel</title>
+    <title>9X Godzilla 2.0 - Ultimate Smart Panel</title>
     <style>
         * {
             box-sizing: border-box;
@@ -17,7 +17,7 @@
             background: #000;
         }
 
-        /* 👑 BIGGER TOP STATUS BAR (85px Size - Clear Text) */
+        /* 💎 PREMIUM 85px TOP STATUS BAR */
         .top-status-bar {
             width: 100%;
             height: 85px;
@@ -41,22 +41,31 @@
             text-shadow: 0 0 8px #ff0055;
         }
 
-        /* Status Badge Style */
+        /* Dynamic Status Badge */
         .status-badge {
             padding: 10px 22px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             border: 2px solid #ff0055;
             color: #ff0055;
             background: rgba(255, 0, 85, 0.15);
             box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+            text-align: center;
             transition: all 0.4s ease;
         }
 
-        /* Active Green Status */
+        /* Alert Warning State (Orange/Yellow for Deposit) */
+        .status-deposit-needed {
+            border-color: #ffaa00 !important;
+            color: #ffaa00 !important;
+            background: rgba(255, 170, 0, 0.15) !important;
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.5) !important;
+        }
+
+        /* Fully Activated Verified State (Green) */
         .status-verified {
             border-color: #00ffcc !important;
             color: #00ffcc !important;
@@ -64,10 +73,10 @@
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.5) !important;
         }
 
-        /* 🌐 GAME CONTAINER */
+        /* 📱 SITE CONTAINER */
         .web-container {
             width: 100%;
-            height: calc(100% - 85px); /* Adjusted for bigger top bar */
+            height: calc(100% - 85px);
             position: relative;
         }
 
@@ -94,55 +103,64 @@
         const statusText = document.getElementById('statusText');
         const statusBar = document.getElementById('statusBar');
 
-        // Aapki Links
         const REGISTER_URL = "https://www.jaiclub18.com/#/register?invitationCode=377572996558";
+        
+        let initialRegistrationDone = false;
 
-        // Local variable to check session registration status
-        let hasRegisteredInSession = false;
-
-        // 🔄 STRICT REAL-TIME TRACKING LOOP
+        // 🔄 CONTINUOUS REAL-TIME TRACKING (0.7 Seconds Interval)
         setInterval(() => {
             try {
                 let currentURL = iframe.contentWindow.location.href;
+                let doc = iframe.contentWindow.document;
 
-                // 🛑 1. STRICT REGISTER TRIGGER: Agar URL me login dikhe, ya user logout kare, ya purana login detected ho
+                // 🛑 1. LOGOUT OR DIRECT LOGIN INTERCEPT LOOP (Never allow user on login route)
                 if (currentURL.includes('#/login') || currentURL.endsWith('/login') || currentURL.includes('logout')) {
+                    iframe.src = REGISTER_URL; // Force back to registration
+                    initialRegistrationDone = false;
                     
-                    // User ko bina pooche sidha fresh register link par redirect karega
-                    iframe.src = REGISTER_URL; 
-                    hasRegisteredInSession = false; // Status resets
-                    
-                    // Top Bar settings resetting to NOT ACTIVATED
+                    // Reset to original status
                     statusText.innerText = "NOT ACTIVATED";
                     statusText.className = "status-badge";
                     statusBar.style.borderBottomColor = "#ff0055";
-                    
-                    alert("⚠️ Registration Required! Please create a fresh new account first to activate this panel.");
-                } 
-                
-                // 🟢 2. CHECK SUCCESSFUL REGISTRATION / LOGIN AFTER REGISTRATION
-                // Agar user register karke dashboard ya main wallet page par successfully pahunch jata hai
-                else if (currentURL.includes('#/home') || currentURL.includes('#/main')) {
-                    hasRegisteredInSession = true;
-                    
-                    // Top Bar becomes GREEN and ACTIVATED
-                    statusText.innerText = "PANEL ACTIVATED / CONNECTED";
-                    statusText.className = "status-badge status-verified";
-                    statusBar.style.borderBottomColor = "#00ffcc";
+                    return;
                 }
-                
-                // 🔄 3. LOGOUT TRACKING: Agar active user wapas home se hat kar kahin bahar jata hai
-                else if (hasRegisteredInSession && (currentURL.includes('#/register') || currentURL.includes('invitationCode'))) {
-                    // Agar banda chalaki se dobara bina account banaye bahar aayega toh status fir deactivate ho jayega
+
+                // 💸 2. LIVE DEPOSIT & BALANCE TRACKING DETECTOR
+                // Elements parsed dynamically from the dashboard elements seen in the video
+                let balanceElement = doc.querySelector('.balance, .total-balance, [class*="balance"]'); 
+                let walletAmount = 0;
+
+                if (balanceElement) {
+                    // Extract numerical values from strings like "₹0.00" or "300"
+                    walletAmount = parseFloat(balanceElement.innerText.replace(/[^0-9.]/g, '')) || 0;
+                }
+
+                // 💳 3. SYSTEM LOGIC CONTROLLER BASED ON USER REVENUE / NAVIGATION
+                if (currentURL.includes('#/home') || currentURL.includes('#/main') || currentURL.includes('#/mine')) {
+                    initialRegistrationDone = true;
+
+                    if (walletAmount >= 300) {
+                        // USER VERIFIED & CONNECTED (Green State triggered)
+                        statusText.innerText = "USER VERIFIED / CONNECTED";
+                        statusText.className = "status-badge status-verified";
+                        statusBar.style.borderBottomColor = "#00ffcc";
+                    } else {
+                        // REGISTERED BUT NO DEPOSIT / LOW BALANCE (Orange State triggered)
+                        statusText.innerText = "PLEASE DEPOSIT 300 RUPEES";
+                        statusText.className = "status-badge status-deposit-needed";
+                        statusBar.style.borderBottomColor = "#ffaa00";
+                    }
+                } else if (!initialRegistrationDone) {
+                    // Default Initial State
                     statusText.innerText = "NOT ACTIVATED";
                     statusText.className = "status-badge";
                     statusBar.style.borderBottomColor = "#ff0055";
                 }
 
-            } catch (e) {
-                // Background runtime validation wrapper
+            } catch (error) {
+                // Background execution layer protection
             }
-        }, 800); // Super fast checking (Every 0.8 seconds)
+        }, 700);
     </script>
 
 </body>

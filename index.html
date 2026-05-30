@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Godzilla 9X Mod Panel</title>
+    <title>Godzilla 9X Ultimate Mod Panel</title>
     <style>
         * {
             box-sizing: border-box;
@@ -17,56 +17,57 @@
             background: #000;
         }
 
-        /* 👑 TOP STATUS BAR (Aapke Kahne Pe Ekdam Top Par Set Kiya Hai) */
+        /* 👑 BIGGER TOP STATUS BAR (85px Size - Clear Text) */
         .top-status-bar {
             width: 100%;
-            height: 60px;
-            background: linear-gradient(180deg, #111 0%, #000 100%);
-            border-bottom: 2px solid #ff0055;
+            height: 85px;
+            background: linear-gradient(180deg, #151515 0%, #050505 100%);
+            border-bottom: 3px solid #ff0055;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            padding: 0 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
             position: relative;
             z-index: 9999;
-            transition: 0.5s;
+            transition: all 0.4s ease;
         }
 
         .mod-title {
             color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px #ff0055;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px #ff0055;
         }
 
-        /* Status Badge (Shuru me Not Active Rahega) */
+        /* Status Badge Style */
         .status-badge {
-            padding: 6px 15px;
-            border-radius: 4px;
-            font-size: 12px;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: bold;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            border: 1px solid #ff0055;
+            border: 2px solid #ff0055;
             color: #ff0055;
-            background: rgba(255, 0, 85, 0.1);
-            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
+            background: rgba(255, 0, 85, 0.15);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+            transition: all 0.4s ease;
         }
 
-        /* Success Status (Jab Register ho jayega) */
+        /* Active Green Status */
         .status-verified {
             border-color: #00ffcc !important;
             color: #00ffcc !important;
-            background: rgba(0, 255, 204, 0.1) !important;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4) !important;
+            background: rgba(0, 255, 204, 0.15) !important;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5) !important;
         }
 
-        /* 🌐 REAL SITE LOADER (Niche Chalne Wali Window) */
+        /* 🌐 GAME CONTAINER */
         .web-container {
             width: 100%;
-            height: calc(100% - 60px); /* Top bar ki jagah chhod kar baki poori screen */
+            height: calc(100% - 85px); /* Adjusted for bigger top bar */
             position: relative;
         }
 
@@ -93,39 +94,55 @@
         const statusText = document.getElementById('statusText');
         const statusBar = document.getElementById('statusBar');
 
-        // Aapki Official Links
+        // Aapki Links
         const REGISTER_URL = "https://www.jaiclub18.com/#/register?invitationCode=377572996558";
-        const LOGIN_URL = "https://www.jaiclub18.com/#/login";
 
-        // 🔄 AUTOMATIC REDIRECT & VALIDATION LOGIC
-        // Jab bhi user iframe ke andar koi button dabayega ya page badlega:
+        // Local variable to check session registration status
+        let hasRegisteredInSession = false;
+
+        // 🔄 STRICT REAL-TIME TRACKING LOOP
         setInterval(() => {
             try {
-                // Hum iframe ka current url track karenge
                 let currentURL = iframe.contentWindow.location.href;
 
-                // 🛑 BLOCK LOGIN CLICK: Agar user ne chalaaki se 'Login' par click kiya
-                if (currentURL.includes('#/login') || currentURL.endsWith('/login')) {
+                // 🛑 1. STRICT REGISTER TRIGGER: Agar URL me login dikhe, ya user logout kare, ya purana login detected ho
+                if (currentURL.includes('#/login') || currentURL.endsWith('/login') || currentURL.includes('logout')) {
                     
-                    // System use automatic bina kuch kahe wapas Register link par fenk dega
+                    // User ko bina pooche sidha fresh register link par redirect karega
                     iframe.src = REGISTER_URL; 
+                    hasRegisteredInSession = false; // Status resets
                     
+                    // Top Bar settings resetting to NOT ACTIVATED
                     statusText.innerText = "NOT ACTIVATED";
                     statusText.className = "status-badge";
                     statusBar.style.borderBottomColor = "#ff0055";
-                    alert("⚠️ Access Denied! Pehle is link se naya account register karein.");
+                    
+                    alert("⚠️ Registration Required! Please create a fresh new account first to activate this panel.");
                 } 
                 
-                // 🟢 UNLOCK CONNECTED: Agar user successfully dashboard/home par aa gaya register karke
+                // 🟢 2. CHECK SUCCESSFUL REGISTRATION / LOGIN AFTER REGISTRATION
+                // Agar user register karke dashboard ya main wallet page par successfully pahunch jata hai
                 else if (currentURL.includes('#/home') || currentURL.includes('#/main')) {
-                    statusText.innerText = "USER VERIFIED / CONNECTED";
+                    hasRegisteredInSession = true;
+                    
+                    // Top Bar becomes GREEN and ACTIVATED
+                    statusText.innerText = "PANEL ACTIVATED / CONNECTED";
                     statusText.className = "status-badge status-verified";
                     statusBar.style.borderBottomColor = "#00ffcc";
                 }
+                
+                // 🔄 3. LOGOUT TRACKING: Agar active user wapas home se hat kar kahin bahar jata hai
+                else if (hasRegisteredInSession && (currentURL.includes('#/register') || currentURL.includes('invitationCode'))) {
+                    // Agar banda chalaki se dobara bina account banaye bahar aayega toh status fir deactivate ho jayega
+                    statusText.innerText = "NOT ACTIVATED";
+                    statusText.className = "status-badge";
+                    statusBar.style.borderBottomColor = "#ff0055";
+                }
+
             } catch (e) {
-                // Agar third-party security block kare, toh hum safety ke liye default clicked state check rakhte hain
+                // Background runtime validation wrapper
             }
-        }, 1000); // Har 1 second me automatic check karega
+        }, 800); // Super fast checking (Every 0.8 seconds)
     </script>
 
 </body>

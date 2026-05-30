@@ -3,127 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jai Club 9X Godzilla Mod Panel</title>
+    <title>Godzilla 9X Mod Panel</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
-        body, html { height: 100%; overflow: hidden; background: #000; }
-        
-        /* 🎮 GAME CONTAINER (Yahan Real Game Website Chalegi) */
-        #gameView {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* 👑 TOP STATUS BAR (Aapke Kahne Pe Ekdam Top Par Set Kiya Hai) */
+        .top-status-bar {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, #111 0%, #000 100%);
+            border-bottom: 2px solid #ff0055;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 9999;
+            transition: 0.5s;
+        }
+
+        .mod-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px #ff0055;
+        }
+
+        /* Status Badge (Shuru me Not Active Rahega) */
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid #ff0055;
+            color: #ff0055;
+            background: rgba(255, 0, 85, 0.1);
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
+        }
+
+        /* Success Status (Jab Register ho jayega) */
+        .status-verified {
+            border-color: #00ffcc !important;
+            color: #00ffcc !important;
+            background: rgba(0, 255, 204, 0.1) !important;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4) !important;
+        }
+
+        /* 🌐 REAL SITE LOADER (Niche Chalne Wali Window) */
+        .web-container {
+            width: 100%;
+            height: calc(100% - 60px); /* Top bar ki jagah chhod kar baki poori screen */
+            position: relative;
+        }
+
+        iframe {
             width: 100%;
             height: 100%;
             border: none;
-        }
-
-        /* 🔴 POPUP 1: ACCESS DENIED SCREEN (Strict Block) */
-        .overlay-block {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        .error-card {
-            background: #111;
-            border: 3px solid #d32f2f;
-            border-radius: 15px;
-            padding: 30px;
-            width: 90%;
-            max-width: 360px;
-            text-align: center;
-            box-shadow: 0 0 20px #d32f2f;
-        }
-        .warning-icon { font-size: 50px; color: #d32f2f; margin-bottom: 10px; }
-        .error-card h2 { color: #fff; letter-spacing: 2px; margin-bottom: 5px; font-size: 24px; }
-        .error-card p { color: #aaa; font-size: 13px; margin-bottom: 20px; text-transform: uppercase; }
-        .btn-reg-now {
-            display: block; width: 100%; padding: 15px;
-            background: linear-gradient(135deg, #d32f2f, #b71c1c);
-            color: white; border: none; border-radius: 8px;
-            font-size: 18px; font-weight: bold; cursor: pointer;
-            text-decoration: none; text-shadow: 1px 1px 2px #000;
-        }
-
-        /* 🟢 POPUP 2: MOD HACK PANEL FLOATING (Connected Status) */
-        .mod-panel {
-            position: fixed;
-            bottom: 30px; left: 50%;
-            transform: translateX(-50%);
-            background: radial-gradient(circle, #200101 0%, #000000 100%);
-            border: 2px solid #ff0000;
-            border-radius: 50% / 15%;
-            padding: 15px 40px;
-            text-align: center;
-            box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000;
-            z-index: 999;
-            display: none; /* Starting me hidden rahega */
-        }
-        .mod-title {
-            font-size: 14px; font-weight: bold; color: #fff;
-            letter-spacing: 3px; margin-bottom: 4px;
-        }
-        .status-badge {
-            background: #000; border: 1px solid #00ff00;
-            color: #00ff00; font-size: 11px; font-weight: bold;
-            padding: 3px 15px; border-radius: 4px;
-            display: inline-block; box-shadow: 0 0 8px rgba(0,255,0,0.4);
-            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <iframe id="gameView" src="https://www.jaiclub18.com/#/register?invitationCode=377572996558"></iframe>
-
-    <div id="blockScreen" class="overlay-block">
-        <div class="error-card">
-            <div class="warning-icon">⚠️</div>
-            <h2>ACCESS DENIED</h2>
-            <p>Unregistered account detected.<br>Please register to activate.</p>
-            <a href="https://www.jaiclub18.com/#/register?invitationCode=377572996558" target="_self" class="btn-reg-now" onclick="startTracking()">REGISTER NOW</a>
-        </div>
+    <div id="statusBar" class="top-status-bar">
+        <div class="mod-title">9X GODZILLA 2.0</div>
+        <div id="statusText" class="status-badge">NOT ACTIVATED</div>
     </div>
 
-    <div id="modPanel" class="mod-panel">
-        <div class="mod-title">9X GODZILLA 2.0</div>
-        <div class="status-badge">USER VERIFIED</div>
+    <div class="web-container">
+        <iframe id="siteFrame" src="https://www.jaiclub18.com/#/register?invitationCode=377572996558"></iframe>
     </div>
 
     <script>
-        const iframe = document.getElementById('gameView');
-        const blockScreen = document.getElementById('blockScreen');
-        const modPanel = document.getElementById('modPanel');
+        const iframe = document.getElementById('siteFrame');
+        const statusText = document.getElementById('statusText');
+        const statusBar = document.getElementById('statusBar');
 
-        // Automatic Track Function
-        function startTracking() {
-            // Background me session status 'registered' update ho jayega
-            sessionStorage.setItem('account_verified', 'true');
-            blockScreen.style.display = 'none';
-        }
+        // Aapki Official Links
+        const REGISTER_URL = "https://www.jaiclub18.com/#/register?invitationCode=377572996558";
+        const LOGIN_URL = "https://www.jaiclub18.com/#/login";
 
-        // Automatic Check Logic: Jab page reload ya switch hoga
-        iframe.onload = function() {
-            let isVerified = sessionStorage.getItem('account_verified');
-            
-            // Check process: Agar account verified set ho chuka hai
-            if (isVerified === 'true') {
-                blockScreen.style.display = 'none';
-                modPanel.style.display = 'block'; // Panel active ho jayega
-            } else {
-                blockScreen.style.display = 'flex';
-                modPanel.style.display = 'none';
+        // 🔄 AUTOMATIC REDIRECT & VALIDATION LOGIC
+        // Jab bhi user iframe ke andar koi button dabayega ya page badlega:
+        setInterval(() => {
+            try {
+                // Hum iframe ka current url track karenge
+                let currentURL = iframe.contentWindow.location.href;
+
+                // 🛑 BLOCK LOGIN CLICK: Agar user ne chalaaki se 'Login' par click kiya
+                if (currentURL.includes('#/login') || currentURL.endsWith('/login')) {
+                    
+                    // System use automatic bina kuch kahe wapas Register link par fenk dega
+                    iframe.src = REGISTER_URL; 
+                    
+                    statusText.innerText = "NOT ACTIVATED";
+                    statusText.className = "status-badge";
+                    statusBar.style.borderBottomColor = "#ff0055";
+                    alert("⚠️ Access Denied! Pehle is link se naya account register karein.");
+                } 
+                
+                // 🟢 UNLOCK CONNECTED: Agar user successfully dashboard/home par aa gaya register karke
+                else if (currentURL.includes('#/home') || currentURL.includes('#/main')) {
+                    statusText.innerText = "USER VERIFIED / CONNECTED";
+                    statusText.className = "status-badge status-verified";
+                    statusBar.style.borderBottomColor = "#00ffcc";
+                }
+            } catch (e) {
+                // Agar third-party security block kare, toh hum safety ke liye default clicked state check rakhte hain
             }
-        };
-
-        // Agar user register karne ke baad page par waapas aata hai, tab auto-check chalega
-        window.addEventListener('pageshow', function() {
-            if (sessionStorage.getItem('account_verified') === 'true') {
-                blockScreen.style.display = 'none';
-                modPanel.style.display = 'block';
-            }
-        });
+        }, 1000); // Har 1 second me automatic check karega
     </script>
 
 </body>
